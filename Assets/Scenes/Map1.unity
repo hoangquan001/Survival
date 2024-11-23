@@ -1143,7 +1143,7 @@ GameObject:
   - component: {fileID: 32388847}
   - component: {fileID: 32388848}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CameraController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44263,6 +44263,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1077911949, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: aafa1bcc111528d41963422f8ede8253, type: 3}
+    - target: {fileID: 1077911949, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'root'\n\tTransform 'lowerarm_l'\n\tTransform
+        'root'\n\tTransform 'neck_01'\n\tTransform 'clavicle_l'\n\tTransform 'ring_02_l'\n\tTransform
+        'hand_l'\n\tTransform 'middle_01_l'\n\tTransform 'ring_01_r'\n\tTransform
+        'spine_02'\n\tand more ...\n\tFrom animation clip 'Idle1'\n\tFrom animation
+        clip 'Running'\n\tFrom animation clip 'Jump'\n\tFrom animation clip 'Standing
+        Melee Attack Backhand'\n\tFrom animation clip 'Sheathing Sword'"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
+      propertyPath: MaxSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4705091732813058735, guid: f92199aaa72b3dc42939ac6c8c861ec3,
         type: 3}
       propertyPath: m_RootOrder
