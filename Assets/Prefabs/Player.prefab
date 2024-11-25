@@ -360,12 +360,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.72
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -181
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
@@ -2113,12 +2113,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.8
-  m_Radius: 0.27
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.91, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!95 &1077911949
 Animator:
   serializedVersion: 5
@@ -2128,7 +2128,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5332271493688805397}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: aafa1bcc111528d41963422f8ede8253, type: 3}
   m_Controller: {fileID: 9100000, guid: 465b3cb0910063244993df8d881ff321, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -2152,5 +2152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5cf5a44c01bab4f8c5e16bd6694fba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 5
+  MaxSpeed: 10
+  RunSpeed: 0
   RotationSpeed: 25
