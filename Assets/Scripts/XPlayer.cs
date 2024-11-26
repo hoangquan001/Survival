@@ -25,17 +25,26 @@ public class XPlayer : MonoBehaviour
     private float acceleration = 10;
 
     private float jumpHeight = 0;
+    Vector3 velocity = Vector3.zero;
+
+    float JumpTime = 0;
+    float JumpSpeed = 0;
+    public Vector3 detalMove = Vector3.zero;
+    float Gravity
+    {
+        get
+        {
+            return -1;
+        }
+    }
 
     public bool isGrounded
     {
         get
         {
-            // Vector3 p1 = transform.position + m_CharacterController.center - m_CharacterController.height * Vector3.up / 2;
-            // Vector3 p2 = p1 + Vector3.up * m_CharacterController.height;
-            // return Physics.CapsuleCast(p1, p2, m_CharacterController.radius, Vector3.down, 0.1f);
             float h = m_CharacterController.height;
             return Physics.Raycast(transform.position + Vector3.up, Vector3.down, 1 + 0.1f);
-            // return m_CharacterController.isGrounded;
+
         }
     }
     // Start is called before the first frame update
@@ -77,10 +86,7 @@ public class XPlayer : MonoBehaviour
         }
         RunSpeed = Mathf.Clamp(RunSpeed, 0, MaxSpeed);
     }
-    Vector3 velocity = Vector3.zero;
 
-    float JumpTime = 0;
-    float JumpSpeed = 0;
 
     // Update is called once per frame
     void Update()
@@ -88,26 +94,22 @@ public class XPlayer : MonoBehaviour
 
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
-        velocity = new Vector3(horizontal, 0, vertical);
+        var movement = new Vector3(horizontal, 0, vertical);
 
         Vector3 forward = Camera.main.transform.forward;
         forward.y = 0;
         Vector3 right = Camera.main.transform.right;
         right.y = 0;
 
-        if (velocity != Vector3.zero)
+        if (movement != Vector3.zero)
         {
             forward = Quaternion.LookRotation(Vector3.forward * vertical + Vector3.right * horizontal) * forward;
-            velocity = forward;
+            movement = forward;
             transform.forward = Vector3.Lerp(transform.forward, forward, Time.deltaTime * RotationSpeed);
         }
-        if (Vector3.Angle(transform.forward, forward) > 179)
-        {
 
-        }
+        CalculateRunSpeed(movement);
 
-        CalculateRunSpeed(velocity);
-        velocity.y += Gravity * Time.deltaTime;
         m_animator.SetFloat("speed", RunSpeed);
         if (Input.GetKeyUp(KeyCode.V))
         {
@@ -119,31 +121,19 @@ public class XPlayer : MonoBehaviour
             m_animator.SetBool("isFalling", false);
 
             JumpTime = 0;
-            JumpSpeed = 3;
-            // movement.y -= 2 * Gravity * Time.deltaTime;
+            JumpSpeed = 5;
         }
 
+        JumpTime += Time.deltaTime;
 
-        JumpSpeed = JumpSpeed + Gravity * JumpTime * 2;
-        velocity.y = JumpSpeed * Time.deltaTime;
-        JumpTime += Time.deltaTime * Time.deltaTime;
-        velocity.y = Mathf.Clamp(velocity.y, Gravity, -Gravity);
+
         if (velocity.y < 0)
         {
             m_animator.SetBool("isJumping", false);
-            m_animator.SetBool("isFalling", true);
+            m_animator.SetBool("isFalling", true);  
         }
         m_animator.SetBool("isGrounded", isGrounded);
 
-    }
-
-    Vector3 StickGround()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100))
-        {
-            return hit.point;
-        }
-        return transform.position;
     }
 
 
@@ -154,33 +144,23 @@ public class XPlayer : MonoBehaviour
 
     void HandleFalling()
     {
-        // if (isGrounded)
-        // m_CharacterController.Move(Vector3.down * 2);
-        if (isGrounded)
-        {
-            // transform.position -= Vector3.down * Gravity * Time.deltaTime;
-        }
+        JumpSpeed = JumpSpeed + Gravity * JumpTime;
+        velocity.y = Mathf.Clamp(JumpSpeed, Gravity*2, -Gravity*2)* Time.fixedDeltaTime;
+
     }
 
-    float Gravity
-    {
-        get
-        {
-            return Physics.gravity.y;
-        }
-    }
+
 
     void OnAnimatorMove()
     {
         Vector3 move = m_animator.deltaPosition;
+        move+= detalMove;
         if (!isGrounded)
         {
             move = velocity * MaxSpeed * Time.deltaTime / 2;
         }
         move.y = velocity.y;
         m_CharacterController.Move(move);
-
-
     }
 
 }
