@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
+using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,23 +19,22 @@ public class LinePlatform : Platform
     private void OnDrawGizmosSelected()
     {
 
-            if (Points.Any(x => x == null))
-                return;
-            for (int i = 0; i < Points.Count; i++)
+        if (Points.Any(x => x == null))
+            return;
+        for (int i = 0; i < Points.Count; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(Points[i].position, 0.2f);
+        }
+        for (int i = 0; i < Points.Count; i++)
+        {
+            Gizmos.color = Color.green;
+            if (Type is LoopType.LoopPingPong or LoopType.LoopOnce)
             {
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(Points[i].position, 0.2f);
+                if (i + 1 >= Points.Count) continue;
             }
-
-            for (int i = 0; i < Points.Count; i++)
-            {
-                Gizmos.color = Color.green;
-                if (Type is LoopType.LoopPingPong or LoopType.LoopOnce)
-                {
-                    if (i + 1 >= Points.Count) continue;
-                }
-                Gizmos.DrawLine(Points[i].position, Points[(i + 1) % Points.Count].position);
-            }
+            Gizmos.DrawLine(Points[i].position, Points[(i + 1) % Points.Count].position);
+        }
 
     }
     void CalculateIndex(LoopType type)
@@ -68,8 +67,8 @@ public class LinePlatform : Platform
         var next = Vector3.MoveTowards(transform.position, Points[StartIdx].position, Time.fixedDeltaTime * Speed / 10);
         Vector3 detalMove = next - transform.position;
         transform.position = next;
-        UnityEngine.Debug.Log(detalMove.magnitude);
-      
+        // UnityEngine.Debug.Log(detalMove.magnitude);
+
         otherCC?.Move(detalMove);
     }
 }

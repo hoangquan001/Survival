@@ -48031,6 +48031,14 @@ PrefabInstance:
       propertyPath: m_SkinWidth
       value: 0.01
       objectReference: {fileID: 0}
+    - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
+      propertyPath: MaxSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
+      propertyPath: RotationSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4705091732813058735, guid: f92199aaa72b3dc42939ac6c8c861ec3,
         type: 3}
       propertyPath: m_RootOrder

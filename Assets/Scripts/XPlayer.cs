@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.WebSockets;
 using Cinemachine;
 using SingularityGroup.HotReload;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 
@@ -22,13 +21,14 @@ public class XPlayer : MonoBehaviour
     public float RunSpeed = 0;
     public float RotationSpeed = 15;
 
-    private float acceleration = 10;
+    public float acceleration = 20;
 
     private float jumpHeight = 0;
     Vector3 velocity = Vector3.zero;
 
     float JumpTime = 0;
     float JumpSpeed = 0;
+    [HideInInspector]
     public Vector3 detalMove = Vector3.zero;
     float Gravity
     {
@@ -72,18 +72,13 @@ public class XPlayer : MonoBehaviour
 
     void CalculateRunSpeed(Vector3 movement)
     {
+        Debug.Log("RunSpeed: " + (movement.magnitude));
         float scale = 1;
-        if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
+        if (movement.magnitude <= 0)
         {
-            scale = (1 - movement.magnitude);
-            RunSpeed -= acceleration * ((RunSpeed + 0.1f)) * Time.deltaTime * scale;
-
+            scale = -1;
         }
-        else
-        {
-            scale = movement.magnitude * 1;
-            RunSpeed += acceleration * (MaxSpeed / (RunSpeed + 0.1f)) * Time.deltaTime * scale;
-        }
+        RunSpeed += acceleration * scale * Time.deltaTime;
         RunSpeed = Mathf.Clamp(RunSpeed, 0, MaxSpeed);
     }
 
@@ -92,8 +87,8 @@ public class XPlayer : MonoBehaviour
     void Update()
     {
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
         var movement = new Vector3(horizontal, 0, vertical);
 
         Vector3 forward = Camera.main.transform.forward;
@@ -104,7 +99,7 @@ public class XPlayer : MonoBehaviour
         if (movement != Vector3.zero)
         {
             forward = Quaternion.LookRotation(Vector3.forward * vertical + Vector3.right * horizontal) * forward;
-            movement = forward;
+            // movement = forward;
             transform.forward = Vector3.Lerp(transform.forward, forward, Time.deltaTime * RotationSpeed);
         }
 
@@ -130,7 +125,7 @@ public class XPlayer : MonoBehaviour
         if (velocity.y < 0)
         {
             m_animator.SetBool("isJumping", false);
-            m_animator.SetBool("isFalling", true);  
+            m_animator.SetBool("isFalling", true);
         }
         m_animator.SetBool("isGrounded", isGrounded);
 
@@ -145,7 +140,7 @@ public class XPlayer : MonoBehaviour
     void HandleFalling()
     {
         JumpSpeed = JumpSpeed + Gravity * JumpTime;
-        velocity.y = Mathf.Clamp(JumpSpeed, Gravity*2, -Gravity*2)* Time.fixedDeltaTime;
+        velocity.y = Mathf.Clamp(JumpSpeed, Gravity * 2, -Gravity * 2) * Time.fixedDeltaTime;
 
     }
 
@@ -154,7 +149,7 @@ public class XPlayer : MonoBehaviour
     void OnAnimatorMove()
     {
         Vector3 move = m_animator.deltaPosition;
-        move+= detalMove;
+        move += detalMove;
         if (!isGrounded)
         {
             move = velocity * MaxSpeed * Time.deltaTime / 2;
