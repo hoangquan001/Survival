@@ -12,7 +12,7 @@ public class StartMenuDlg : BaseDlg<StartMenuDlg>
     {
         get
         {
-            return "StartMenu";
+            return "StartMenu 1";
         }
     }
 

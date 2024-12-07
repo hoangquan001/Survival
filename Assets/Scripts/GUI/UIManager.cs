@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +37,14 @@ public class UIManager : MonoBehaviour
     {
 
     }
-
+    public void OnDlgShow(IBaseDlg dlg)
+    {
+        
+    }
+    public void OnDlgHide(IBaseDlg dlg)
+    {
+        
+    }
     public void AddDlg(IBaseDlg dlg)
     {
         dlgList.Add(dlg);

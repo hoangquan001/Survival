@@ -73,11 +73,13 @@ public class BaseDlg<T> : IBaseDlg where T : BaseDlg<T>, new()
         {
             gameObject.SetActive(true);
             OnShow();
+            UIManager.Instance.OnDlgShow(this);
         }
         else
         {
             gameObject.SetActive(false);
             OnHide();
+            UIManager.Instance.OnDlgHide(this);
         }
 
     }

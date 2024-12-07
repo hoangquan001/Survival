@@ -14,7 +14,7 @@ public class GunController : MonoBehaviour
         m_Animator = GetComponent<Animator>();
     }
 
-    public XPlayer host;
+    public PlayerController host;
     void Start()
     {
     }

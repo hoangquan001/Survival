@@ -3,40 +3,33 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DG.Tweening;
+using EditorAttributes;
 using UnityEditor;
 using UnityEngine;
 
 
-public class LinePlatform : Platform
+public class LinePlatform : MovePlatform
 {
-    public List<Transform> Points = new List<Transform>();
+    public List<Vector3> Points = new List<Vector3>();
+
+    public float Distance 
+    {
+        get {
+            float distance = 0;
+            for (int i = 0; i < Points.Count - 1; i++)
+            {
+                distance += (Points[i + 1] - Points[i]).magnitude;
+            }
+            return distance;
+        }
+    }
     public int StartIdx = 0;
 
     private void OnEnable()
     {
-        transform.position = Points[StartIdx].position;
+        transform.position = Points[StartIdx];
     }
-    private void OnDrawGizmosSelected()
-    {
 
-        if (Points.Any(x => x == null))
-            return;
-        for (int i = 0; i < Points.Count; i++)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(Points[i].position, 0.2f);
-        }
-        for (int i = 0; i < Points.Count; i++)
-        {
-            Gizmos.color = Color.green;
-            if (Type is LoopType.LoopPingPong or LoopType.LoopOnce)
-            {
-                if (i + 1 >= Points.Count) continue;
-            }
-            Gizmos.DrawLine(Points[i].position, Points[(i + 1) % Points.Count].position);
-        }
-
-    }
     void CalculateIndex(LoopType type)
     {
         switch (type)
@@ -49,7 +42,7 @@ public class LinePlatform : Platform
                 StartIdx = (StartIdx + Direction) % Points.Count;
                 break;
             case LoopType.LoopOnce:
-                if (StartIdx + 1 >= Points.Count) IsRuning = false;
+                if (StartIdx + 1 >= Points.Count) IsRunning = false;
                 StartIdx = (StartIdx + 1) % Points.Count;
                 break;
             default:
@@ -60,15 +53,63 @@ public class LinePlatform : Platform
     }
     public override void FixedUpdateMove()
     {
-        if ((transform.position - Points[StartIdx].position).magnitude < 0.01)
+        if ((transform.position - Points[StartIdx]).magnitude < 0.01)
         {
             CalculateIndex(Type);
         }
-        var next = Vector3.MoveTowards(transform.position, Points[StartIdx].position, Time.fixedDeltaTime * Speed / 10);
+        float detalDistance = Distance * (Time.fixedDeltaTime / Duration);
+        var next = Vector3.MoveTowards(transform.position, Points[StartIdx], detalDistance);
         Vector3 detalMove = next - transform.position;
         transform.position = next;
         // UnityEngine.Debug.Log(detalMove.magnitude);
 
         otherCC?.Move(detalMove);
+    }
+
+    public void Resetposition()
+    {
+        transform.position = Points[StartIdx];
+    }
+
+}
+
+[CustomEditor(typeof(LinePlatform))]
+public class LinePlatformEditor : Editor
+{
+
+    void OnSceneGUI()
+    {
+        var t = target as LinePlatform;
+        using (var cc = new EditorGUI.ChangeCheckScope())
+        {
+            var Points = new List<Vector3>(t.Points);
+            for (int i = 0; i < t.Points.Count; i++)
+            {
+                var p = t.Points[i];
+                Handles.color = Color.red;
+                var pos = Handles.PositionHandle(p, Quaternion.identity);
+                Points[i] = pos;
+                Handles.color = Color.yellow;
+                Handles.DrawDottedLine(t.Points[i], t.Points[(i + 1) % t.Points.Count], 5);
+                // Handles.Label(Vector3.Lerp(start, end, 0.5f), "Distance:" + (end - start).magnitude);
+            }
+
+            if (cc.changed)
+            {
+                Undo.RecordObject(t, "Move Handles");
+                t.Points = Points;
+            }
+
+        }
+    
+    }
+
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        if(GUILayout.Button("Reset Position"))
+        {
+            (target as LinePlatform).Resetposition();
+        }
     }
 }

@@ -8,8 +8,7 @@ using UnityEngine;
     public class DamageZone : MonoBehaviour
     {
         public int damageAmount = 1;
-        public bool stopCamera = false;
-
+        
         private void Reset()
         {
             GetComponent<Rigidbody>().isKinematic = true;
@@ -27,7 +26,6 @@ using UnityEngine;
                 amount = damageAmount,
                 damager = this,
                 direction = Vector3.up,
-                stopCamera = stopCamera
             };
 
             d.ApplyDamage(msg);
