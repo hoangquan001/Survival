@@ -10,7 +10,7 @@ public class PlayerData
 
 }
 
-public enum PlayerState { Idle = 0, Walk=1, Run=2, Jump=3, Climb=6, Falling=4, Landing=5 }
+public enum PlayerState { Idle = 0, Walk = 1, Run = 2, Jump = 3, Climb = 6, Falling = 4, Landing = 5 }
 public class PlayerController : EntityController
 {
     CharacterController m_Controller;
@@ -53,14 +53,14 @@ public class PlayerController : EntityController
         }
 
         CalculateRunSpeed(movement);
-        
+
 
         m_animator.SetFloat("speed", velocity.x);
         if (Input.GetKeyUp(KeyCode.V))
         {
             m_animator.SetTrigger("turn180");
         }
-        if(Grounded)
+        if (Grounded)
         {
             if (velocity.y < 0)
             {
@@ -73,7 +73,7 @@ public class PlayerController : EntityController
         }
         JumpTime += Time.deltaTime;
 
-    
+
         UpdateAnyState();
         UpdateStateMachine();
         m_animator.SetInteger("playerState", (int)playerState);
@@ -90,7 +90,7 @@ public class PlayerController : EntityController
             StartCoroutine(Jump());
             JumpTime = 0;
         }
-      
+
     }
     void UpdateStateMachine()
     {
@@ -122,17 +122,17 @@ public class PlayerController : EntityController
     }
     IEnumerator Jump()
     {
-        yield return new WaitForSeconds(0.16f);
-        // velocity.y = JumpForce;
-        
+        yield return new WaitForSeconds(0.35f);
+        velocity.y = JumpForce;
+
     }
     public override void Move(Vector3 motion)
     {
-        m_Controller.Move( motion);
+        m_Controller.Move(motion);
     }
     private void FixedUpdate()
     {
-        
+
     }
     private void OnDrawGizmos()
     {
@@ -166,7 +166,7 @@ public class PlayerController : EntityController
     private void GroundedCheck()
     {
         // set sphere position, with offset
-        Grounded = Physics.CheckSphere(transform.TransformPoint(m_Controller.center) + Vector3.down * m_Controller.height/2, m_Controller.radius, 1, QueryTriggerInteraction.Ignore);
+        Grounded = Physics.CheckSphere(transform.TransformPoint(m_Controller.center) + Vector3.down * m_Controller.height / 2, m_Controller.radius, 1, QueryTriggerInteraction.Ignore);
 
     }
     // Update is called once per frame
@@ -182,9 +182,9 @@ public class PlayerController : EntityController
         Debug.Log("Velocity:" + move.magnitude / Time.deltaTime);
         if (!Grounded)
         {
-            move = velocity.x/2 * transform.forward * Time.deltaTime;
+            move = velocity.x / 2 * transform.forward * Time.deltaTime;
         }
-            move.y = 0;
+        move.y = 0;
         Move(move);
     }
 

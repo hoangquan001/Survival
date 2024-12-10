@@ -1753,7 +1753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
       propertyPath: JumpForce
-      value: 20
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
       propertyPath: JumpSpeed
@@ -1765,7 +1765,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
       propertyPath: GravityScale
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1077911952, guid: f92199aaa72b3dc42939ac6c8c861ec3, type: 3}
       propertyPath: MaxJumpSpeed
