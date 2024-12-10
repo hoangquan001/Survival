@@ -11,7 +11,7 @@ public class PlayerData
 }
 
 public enum PlayerState { Idle = 0, Walk=1, Run=2, Jump=3, Climb=6, Falling=4, Landing=5 }
-public class PlayerController : MonoBehaviour
+public class PlayerController : EntityController
 {
     CharacterController m_Controller;
     Animator m_animator;
@@ -20,21 +20,19 @@ public class PlayerController : MonoBehaviour
     public float RotationSpeed = 15;
     public float Acceleration = 20;
     public float JumpForce = 5;
-    public bool Grounded = false;
-    Vector2 velocity = Vector2.zero;
 
     float JumpTime = 0;
     public PlayerState playerState = PlayerState.Idle;
     public float GravityScale = 1;
     public float Gravity { get { return Physics.gravity.y * GravityScale; } }
     // Start is called before the first frame update
-    private void Start()
+    public override void Start()
     {
         m_Controller = GetComponent<CharacterController>();
         m_animator = GetComponent<Animator>();
     }
 
-    private void Update()
+    public override void Update()
     {
         GroundedCheck();
 
@@ -81,7 +79,7 @@ public class PlayerController : MonoBehaviour
         m_animator.SetInteger("playerState", (int)playerState);
 
         m_animator.SetBool("isGrounded", Grounded);
-        Move();
+        Move(Vector3.up * velocity.y * Time.deltaTime);
 
     }
     void UpdateAnyState()
@@ -128,13 +126,13 @@ public class PlayerController : MonoBehaviour
         // velocity.y = JumpForce;
         
     }
-    private void Move()
+    public override void Move(Vector3 motion)
     {
-        m_Controller.Move( Vector3.up * velocity.y * Time.deltaTime);
-        // m_Controller.Move(transform.forward * velocity.x / 2 * Time.deltaTime);
+        m_Controller.Move( motion);
     }
     private void FixedUpdate()
     {
+        
     }
     private void OnDrawGizmos()
     {
@@ -187,7 +185,7 @@ public class PlayerController : MonoBehaviour
             move = velocity.x/2 * transform.forward * Time.deltaTime;
         }
             move.y = 0;
-        m_Controller.Move(move);
+        Move(move);
     }
 
 }

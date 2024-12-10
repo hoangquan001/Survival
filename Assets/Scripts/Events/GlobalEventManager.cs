@@ -9,8 +9,8 @@ public class BaseEventArgs : EventArgs {
 public class EntityDeathEventArgs : BaseEventArgs
 {
     public EventDefine type = EventDefine.EntityDied;
-    public IEntity killer;
-    public IEntity entity;
+    public EntityController killer;
+    public EntityController entity;
 };
 public class GlobalEventManager : XSingleton<GlobalEventManager>
 {

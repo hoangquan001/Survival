@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.UIElements;
-using DesignPatterns.Singleton;
 using System.Collections;
 
 namespace DesignPatterns
