@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-public class PolygonBoundary : MonoBehaviour
+public class PolygonBoundary : Boundary
 {
     public List<Vector3> points = new List<Vector3>();
     
@@ -28,6 +28,18 @@ public class PolygonBoundary : MonoBehaviour
     {
         
     }
+    public override Vector3 RandomPointInBoundary()
+    {
+        var r = Random.value;
+        var t = r * (worldPoints.Count - 2);
+        var i0 = Mathf.FloorToInt(t);
+        var i1 = i0 + 1;
+        var u = t - i0;
+        var p0 = worldPoints[i0];
+        var p1 = worldPoints[i1];
+        return Vector3.Lerp(p0, p1, u);
+    }
+
 }
 
 

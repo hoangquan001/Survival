@@ -9,11 +9,11 @@ public class GravityComponet : EntityComponent
 
     public override void Update()
     {
-        if(host.velocity.y < 0 && host.Grounded)
+        if(host.Velocity.y < 0 && host.Grounded)
         {
-            host.velocity.y = -2;
+            host.Velocity.y = -2;
         }
-        host.Move(host.velocity.y * Time.deltaTime * Vector3.up);
+        host.Move(host.Velocity.y * Time.deltaTime * Vector3.up);
     }
 
 }

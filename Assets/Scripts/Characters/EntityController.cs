@@ -5,12 +5,24 @@ using UnityEngine;
 
 public class EntityController : MonoBehaviour
 {
-    public Vector2 velocity;
-    public bool Grounded = false;
+    [HideInInspector]
+    public Vector2 Velocity;
+    public bool Grounded{ get; protected set; }
+
+    public float GravityScale = 1f;
+    [Range(4, 15)]
+    public float Speed = 10;
+
+    public float JumpForce = 5;
+
+    public float Gravity { get { return Physics.gravity.y * GravityScale; } }
+
+
+
+
     private List<EntityComponent> _ListConponent = new List<EntityComponent>();
     protected NavgationConponent _Nav;
 
-    public bool IsNavigating => _Nav.IsNavigating;
     public void AddComponent(EntityComponent component)
     {
         _ListConponent.Add(component);

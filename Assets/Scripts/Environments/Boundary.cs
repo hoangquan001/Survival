@@ -10,4 +10,9 @@ public class Boundary : MonoBehaviour
     {   
         return true;
     }
+
+    public virtual Vector3 RandomPointInBoundary()
+    {
+        return Vector3.zero;
+    }
 }

@@ -13,19 +13,25 @@ public class PlayerData
 public enum PlayerState { Idle = 0, Walk = 1, Run = 2, Jump = 3, Climb = 6, Falling = 4, Landing = 5 }
 public class PlayerController : EntityController
 {
+    public static PlayerController Instance { get; private set; }
     CharacterController m_Controller;
     Animator m_animator;
-    [Range(4, 15)]
-    public float MaxSpeed = 5;
+
     public float RotationSpeed = 15;
     public float Acceleration = 20;
-    public float JumpForce = 5;
 
     float JumpTime = 0;
     public PlayerState playerState = PlayerState.Idle;
-    public float GravityScale = 1;
-    public float Gravity { get { return Physics.gravity.y * GravityScale; } }
     // Start is called before the first frame update
+    public override void Awake()
+    {
+        base.Awake();
+        Instance = this;
+    }
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
     public override void Start()
     {
         m_Controller = GetComponent<CharacterController>();
@@ -55,21 +61,21 @@ public class PlayerController : EntityController
         CalculateRunSpeed(movement);
 
 
-        m_animator.SetFloat("speed", velocity.x);
+        m_animator.SetFloat("speed", Velocity.x);
         if (Input.GetKeyUp(KeyCode.V))
         {
             m_animator.SetTrigger("turn180");
         }
         if (Grounded)
         {
-            if (velocity.y < 0)
+            if (Velocity.y < 0)
             {
-                velocity.y = -2;
+                Velocity.y = -2;
             }
         }
         else
         {
-            velocity.y += Gravity * Time.deltaTime;
+            Velocity.y += Gravity * Time.deltaTime;
         }
         JumpTime += Time.deltaTime;
 
@@ -79,7 +85,7 @@ public class PlayerController : EntityController
         m_animator.SetInteger("playerState", (int)playerState);
 
         m_animator.SetBool("isGrounded", Grounded);
-        Move(Vector3.up * velocity.y * Time.deltaTime);
+        Move(Vector3.up * Velocity.y * Time.deltaTime);
 
     }
     void UpdateAnyState()
@@ -97,7 +103,7 @@ public class PlayerController : EntityController
         switch (playerState)
         {
             case PlayerState.Jump:
-                if (velocity.y < 0 && JumpTime > 0.8)
+                if (Velocity.y < 0 && JumpTime > 0.8)
                 {
                     playerState = PlayerState.Falling;
                 }
@@ -122,9 +128,9 @@ public class PlayerController : EntityController
     }
     IEnumerator Jump()
     {
-        yield return new WaitForSeconds(0.35f);
-        velocity.y = JumpForce;
-
+        yield return new WaitForSeconds(0.16f);
+        Velocity.y = JumpForce;
+        
     }
     public override void Move(Vector3 motion)
     {
@@ -147,9 +153,9 @@ public class PlayerController : EntityController
     {
         GUIStyle style = new GUIStyle();
         style.fontSize = 24;
-        GUI.Label(new Rect(0, 0, 300, 24), "RunSpeed: " + velocity.x, style);
+        GUI.Label(new Rect(0, 0, 300, 24), "RunSpeed: " + Velocity.x, style);
         GUI.Label(new Rect(0, 24, 300, 24), "IsGrounded: " + Grounded, style);
-        GUI.Label(new Rect(0, 48, 300, 24), "Velocity: " + velocity, style);
+        GUI.Label(new Rect(0, 48, 300, 24), "Velocity: " + Velocity, style);
     }
 
     private void CalculateRunSpeed(Vector3 movement)
@@ -159,8 +165,8 @@ public class PlayerController : EntityController
         {
             scale = -1;
         }
-        velocity.x += Acceleration * scale * Time.deltaTime;
-        velocity.x = Mathf.Clamp(velocity.x, 0, MaxSpeed);
+        Velocity.x += Acceleration * scale * Time.deltaTime;
+        Velocity.x = Mathf.Clamp(Velocity.x, 0, Speed);
     }
 
     private void GroundedCheck()
@@ -182,7 +188,7 @@ public class PlayerController : EntityController
         Debug.Log("Velocity:" + move.magnitude / Time.deltaTime);
         if (!Grounded)
         {
-            move = velocity.x / 2 * transform.forward * Time.deltaTime;
+            move = Velocity.x/2 * transform.forward * Time.deltaTime;
         }
         move.y = 0;
         Move(move);

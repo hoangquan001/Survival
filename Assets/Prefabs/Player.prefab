@@ -3068,8 +3068,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5cf5a44c01bab4f8c5e16bd6694fba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  velocity: {x: 0, y: 0}
+  Grounded: 0
   MaxSpeed: 10
-  RunSpeed: 0
   RotationSpeed: 25
-  acceleration: 20
-  detalMove: {x: 0, y: 0, z: 0}
+  Acceleration: 20
+  JumpForce: 10
+  playerState: 0
+  GravityScale: 3
