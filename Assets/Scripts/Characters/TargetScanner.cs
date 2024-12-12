@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,13 +11,23 @@ public class TargetScanner : MonoBehaviour
     [Range(0.0f, 360.0f)]
     public float detectionAngle = 270;
     public float maxHeightDifference = 1.0f;
+
     public LayerMask viewBlockerLayerMask;
-    public PlayerController Detect(bool useHeightDifference = true)
+    [SerializeField]
+    private MonoEventReceiver receiver;
+    [SerializeField]
+    private EntityController expectedTarget = null;
+
+    private void Start()
+    {
+        receiver = GetComponent<MonoEventReceiver>();
+    }
+    public EntityController Detect(bool useHeightDifference = true)
     {
 
         Vector3 eyePos = transform.position + Vector3.up * heightOffset;
-        Vector3 toPlayer = PlayerController.Instance.transform.position - eyePos;
-        Vector3 toPlayerTop = PlayerController.Instance.transform.position + Vector3.up * 1.5f - eyePos;
+        Vector3 toPlayer = expectedTarget.transform.position - eyePos;
+        Vector3 toPlayerTop = expectedTarget.transform.position + Vector3.up * 1.5f - eyePos;
 
         if (useHeightDifference && Mathf.Abs(toPlayer.y + heightOffset) > maxHeightDifference)
         { //if the target is too high or too low no need to try to reach it, just abandon pursuit
@@ -44,7 +55,7 @@ public class TargetScanner : MonoBehaviour
                     viewBlockerLayerMask, QueryTriggerInteraction.Ignore);
 
                 if (canSee)
-                    return PlayerController.Instance;
+                    return expectedTarget;
             }
         }
 
@@ -53,8 +64,19 @@ public class TargetScanner : MonoBehaviour
 
     private void Update()
     {
-       
+        var detected = Detect();
+        if (detected != null)
+        {
+            var args = ObjectPoll<EntityDetectedEventArgs>.Get();
+            args.target = detected;
+            receiver.Send(EventDefine.DetectedTarget, args);
+        }
     }
+
+    // void Start()
+    // {
+
+    // }
 
 
     private void OnDrawGizmos()

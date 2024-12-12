@@ -1,17 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-public enum EventDefine { EntityDied, EngineStarted }
 
-public class BaseEventArgs : EventArgs { 
-    public GameObject Sender = null;
-}
-public class EntityDeathEventArgs : BaseEventArgs
-{
-    public EventDefine type = EventDefine.EntityDied;
-    public EntityController killer;
-    public EntityController entity;
-};
+
+
 public class GlobalEventManager : XSingleton<GlobalEventManager>
 {
     // public Dictionary<EventDefine, Action< EventArgs>> events = new Dictionary<EventDefine, Action< EventArgs>>();

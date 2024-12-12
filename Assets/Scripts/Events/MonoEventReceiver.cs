@@ -1,32 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public enum MonoEventType
-{
-    None,
-    Start,
-    Stop,
-    Visible,
-    InVisible
-} 
+// public enum MonoEventType
+// {
+//     None,
+//     Start,
+//     Stop,
+//     Visible,
+//     InVisible
+// } 
 public class MonoEventReceiver : MonoBehaviour
 {
-    Dictionary<MonoEventType, UnityAction> events = new Dictionary<MonoEventType, UnityAction>();
+    Dictionary<EventDefine, UnityAction<BaseEventArgs>> events = new Dictionary<EventDefine, UnityAction<BaseEventArgs>>();
 
-    public void AddListener(MonoEventType type, UnityAction listener)
+    public void AddListener(EventDefine type, UnityAction<BaseEventArgs> listener)
     {
         if (!events.ContainsKey(type)) events.Add(type, null);
         events[type] += listener;
     }
 
-    public void RemoveListener(MonoEventType type, UnityAction listener)
+    public void RemoveListener(EventDefine type, UnityAction<BaseEventArgs> listener)
     {
         if (!events.ContainsKey(type)) return;
         events[type] -= listener;  
     }
 
-    public void Send(MonoEventType type)
+    public void Send(EventDefine type, BaseEventArgs args = null)
     {
-        events[type]?.Invoke();
+        if(!events.ContainsKey(type)) return;
+        events[type]?.Invoke(args);
     }
 }

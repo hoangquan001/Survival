@@ -35,10 +35,10 @@ public class Engine : MonoBehaviour
 
     }
     public void RegisterEvent() { 
-        receiver?.AddListener(MonoEventType.Start, OnStart);
-        receiver?.AddListener(MonoEventType.Stop, OnStop);
-        receiver?.AddListener(MonoEventType.Visible, Visible);
-        receiver?.AddListener(MonoEventType.InVisible, InVisible);
+        receiver?.AddListener(EventDefine.StartEngine, OnStart);
+        receiver?.AddListener(EventDefine.StopEngine, OnStop);
+        receiver?.AddListener(EventDefine.Visible, Visible);
+        receiver?.AddListener(EventDefine.InVisible, InVisible);
         // receiver?.AddListener(MonoEventType.Start, OnStart);
         // receiver?.AddListener(MonoEventType.Start, OnStart);
     }
@@ -51,19 +51,19 @@ public class Engine : MonoBehaviour
 
 
 
-    public virtual void OnStart()
+    public virtual void OnStart(BaseEventArgs baseEventArgs)
     {
         IsRunning = true;
     }
-    public virtual void OnStop()
+    public virtual void OnStop(BaseEventArgs baseEventArgs)
     {
         IsRunning = false;
     }
-    public virtual void Visible()
+    public virtual void Visible(BaseEventArgs baseEventArgs)
     {
         this.gameObject.SetActive(true);
     }
-    public virtual void InVisible()
+    public virtual void InVisible(BaseEventArgs baseEventArgs)
     {
         this.gameObject.SetActive(false);
     }

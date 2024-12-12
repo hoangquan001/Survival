@@ -4,11 +4,11 @@ using UnityEngine;
 public class MonoEventSender : MonoBehaviour
 {
     public MonoEventReceiver receiver;
-    public MonoEventType eventType;
+    public EventDefine eventType;
     [Button("Send Event")]
     public void SendEvent()
     {
-        if(eventType!= MonoEventType.None)
+        if(eventType!= EventDefine.None)
         receiver?.Send(eventType);
     }
     

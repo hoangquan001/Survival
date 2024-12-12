@@ -8,25 +8,23 @@ public class EntityController : MonoBehaviour
     [HideInInspector]
     public Vector2 Velocity;
     public bool Grounded{ get; protected set; }
-
     public float GravityScale = 1f;
-    [Range(4, 15)]
     public float Speed = 10;
-
     public float JumpForce = 5;
-
+    protected int _curState = 0;
+    protected Animator m_animator;
+    protected MonoEventReceiver m_receiver;
+    public event StateChangeEvent onStateChange;
     public float Gravity { get { return Physics.gravity.y * GravityScale; } }
-
-
-
-
-    private List<EntityComponent> _ListConponent = new List<EntityComponent>();
-    protected NavgationConponent _Nav;
-
-    public void AddComponent(EntityComponent component)
+    public virtual int CurState
     {
-        _ListConponent.Add(component);
-        component.Initialization(this);
+        get => _curState;
+        set
+        {
+            if (_curState == value) return;
+            onStateChange?.Invoke(_curState, (int)value);
+            _curState = (int)value;
+        }
     }
 
     public virtual void Start()
@@ -34,9 +32,12 @@ public class EntityController : MonoBehaviour
         
     }
     public virtual void Awake() {
-        // _Nav = GetComponent<NavgationConponent>();
-        // AddComponent(_Nav);
-      
+        m_animator = GetComponent<Animator>();
+        m_receiver = GetComponent<MonoEventReceiver>();
+        if(m_receiver != null)
+        {
+            RegisterEvents();
+        }
     }
 
     public virtual void Die()
@@ -56,12 +57,34 @@ public class EntityController : MonoBehaviour
 
     public virtual void RegisterEvents()
     {
-        
+        onStateChange += OnStateChange;
     }
 
     public virtual void TakeDamage(float damage)
     {
         
+    }
+    protected virtual void OnStateChange(int oldState, int newState)
+    {
+        if (oldState == newState) return;
+
+        OnStateExit(oldState);
+        OnStateEnter(newState);
+    }
+
+    protected virtual void OnStateExit(int State)
+    {
+        EnemyState state = (EnemyState)State;
+
+    }
+    protected virtual void OnStateEnter(int State)
+    {
+      
+    }
+
+    protected virtual void OnStateUpdate(int State)
+    {
+       
     }
 
     // Start is called before the first frame update
@@ -70,6 +93,6 @@ public class EntityController : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        _ListConponent.ForEach(x => x.Update());
+        OnStateUpdate(_curState);
     }
 }

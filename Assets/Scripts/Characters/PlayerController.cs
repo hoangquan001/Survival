@@ -13,33 +13,22 @@ public class PlayerData
 public enum PlayerState { Idle = 0, Walk = 1, Run = 2, Jump = 3, Climb = 6, Falling = 4, Landing = 5 }
 public class PlayerController : EntityController
 {
-    public static PlayerController Instance { get; private set; }
-    CharacterController m_Controller;
-    Animator m_animator;
-
+    private CharacterController m_Controller;
     public float RotationSpeed = 15;
     public float Acceleration = 20;
+    private float JumpTime = 0;
 
-    float JumpTime = 0;
-    public PlayerState playerState = PlayerState.Idle;
     // Start is called before the first frame update
-    public override void Awake()
-    {
-        base.Awake();
-        Instance = this;
-    }
-    private void OnDestroy()
-    {
-        Instance = null;
-    }
+
     public override void Start()
     {
         m_Controller = GetComponent<CharacterController>();
-        m_animator = GetComponent<Animator>();
     }
+    
 
     public override void Update()
     {
+        base.Update();
         GroundedCheck();
 
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -81,8 +70,7 @@ public class PlayerController : EntityController
 
 
         UpdateAnyState();
-        UpdateStateMachine();
-        m_animator.SetInteger("playerState", (int)playerState);
+        m_animator.SetInteger("playerState", (int)_curState);
 
         m_animator.SetBool("isGrounded", Grounded);
         Move(Vector3.up * Velocity.y * Time.deltaTime);
@@ -92,26 +80,44 @@ public class PlayerController : EntityController
     {
         if (Input.GetKeyUp(KeyCode.Space) && Grounded)
         {
-            playerState = PlayerState.Jump;
-            StartCoroutine(Jump());
-            JumpTime = 0;
+            CurState = (int)PlayerState.Jump;
+         
         }
 
     }
-    void UpdateStateMachine()
+    protected override void OnStateEnter(int playerState)
     {
+        base.OnStateEnter(playerState);
+
         switch (playerState)
+        {
+            case (int)PlayerState.Jump:
+                StartCoroutine(Jump());
+                JumpTime = 0;
+                break;
+        }
+    }
+
+    protected override void OnStateExit(int playerState)
+    {
+        base.OnStateExit(playerState);
+    }
+
+    protected override void OnStateUpdate(int playerState) {
+        base.OnStateUpdate(playerState);
+        PlayerState currentState = (PlayerState)playerState;
+        switch (currentState)
         {
             case PlayerState.Jump:
                 if (Velocity.y < 0 && JumpTime > 0.8)
                 {
-                    playerState = PlayerState.Falling;
+                    CurState = (int)PlayerState.Falling;
                 }
                 break;
             case PlayerState.Falling:
                 if (Grounded)
                 {
-                    playerState = PlayerState.Landing;
+                    CurState = (int)PlayerState.Landing;
                 }
                 break;
             case PlayerState.Landing:
@@ -121,12 +127,13 @@ public class PlayerController : EntityController
                 break;
         }
     }
-    IEnumerator Idle(float Delay)
+
+    private IEnumerator Idle(float Delay)
     {
         yield return new WaitForSeconds(Delay);
-        playerState = PlayerState.Idle;
+        CurState = (int)PlayerState.Idle;
     }
-    IEnumerator Jump()
+    private IEnumerator Jump()
     {
         yield return new WaitForSeconds(0.16f);
         Velocity.y = JumpForce;
@@ -173,19 +180,12 @@ public class PlayerController : EntityController
     {
         // set sphere position, with offset
         Grounded = Physics.CheckSphere(transform.TransformPoint(m_Controller.center) + Vector3.down * m_Controller.height / 2, m_Controller.radius, 1, QueryTriggerInteraction.Ignore);
-
     }
     // Update is called once per frame
 
-
-
-
-    float starttime = 0;
-    float distance = 0;
     private void OnAnimatorMove()
     {
         Vector3 move = m_animator.deltaPosition;
-        Debug.Log("Velocity:" + move.magnitude / Time.deltaTime);
         if (!Grounded)
         {
             move = Velocity.x/2 * transform.forward * Time.deltaTime;
