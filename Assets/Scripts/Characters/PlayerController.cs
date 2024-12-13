@@ -1,5 +1,6 @@
 
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -15,8 +16,11 @@ public class PlayerController : EntityController
 {
     private CharacterController m_Controller;
     public float RotationSpeed = 15;
-    public float Acceleration = 20;
-    private float JumpTime = 0;
+    [Range(0, 1)]
+    [SerializeField]
+    private float DelayBeforeJump = 0;
+
+    public bool UseRootMotion = true;
 
     // Start is called before the first frame update
 
@@ -44,7 +48,7 @@ public class PlayerController : EntityController
         {
             forward = Quaternion.LookRotation(Vector3.forward * vertical + Vector3.right * horizontal) * forward;
             // movement = forward;
-            transform.forward = Vector3.Lerp(transform.forward, forward, Time.deltaTime * RotationSpeed);
+            transform.forward = Vector3.RotateTowards(transform.forward, forward, Time.deltaTime * RotationSpeed, .1f);
         }
 
         CalculateRunSpeed(movement);
@@ -65,12 +69,11 @@ public class PlayerController : EntityController
         else
         {
             Velocity.y += Gravity * Time.deltaTime;
+            Velocity.y = Mathf.Clamp(Velocity.y, Physics.gravity.y, -Physics.gravity.y);
         }
-        JumpTime += Time.deltaTime;
-
 
         UpdateAnyState();
-        m_animator.SetInteger("playerState", (int)_curState);
+        m_animator.SetInteger("state", (int)_curState);
 
         m_animator.SetBool("isGrounded", Grounded);
         Move(Vector3.up * Velocity.y * Time.deltaTime);
@@ -83,6 +86,10 @@ public class PlayerController : EntityController
             CurState = (int)PlayerState.Jump;
          
         }
+        if (Velocity.y < 0 && !Grounded)
+        {
+            CurState = (int)PlayerState.Falling;
+        }
 
     }
     protected override void OnStateEnter(int playerState)
@@ -93,7 +100,6 @@ public class PlayerController : EntityController
         {
             case (int)PlayerState.Jump:
                 StartCoroutine(Jump());
-                JumpTime = 0;
                 break;
         }
     }
@@ -109,10 +115,7 @@ public class PlayerController : EntityController
         switch (currentState)
         {
             case PlayerState.Jump:
-                if (Velocity.y < 0 && JumpTime > 0.8)
-                {
-                    CurState = (int)PlayerState.Falling;
-                }
+   
                 break;
             case PlayerState.Falling:
                 if (Grounded)
@@ -121,7 +124,8 @@ public class PlayerController : EntityController
                 }
                 break;
             case PlayerState.Landing:
-                // playerState = PlayerState.Idle;
+                CurState = (int)PlayerState.Idle;
+                Velocity.x = Speed / 4;
                 break;
             case PlayerState.Idle:
                 break;
@@ -135,7 +139,7 @@ public class PlayerController : EntityController
     }
     private IEnumerator Jump()
     {
-        yield return new WaitForSeconds(0.16f);
+        yield return new WaitForSeconds(DelayBeforeJump);
         Velocity.y = JumpForce;
         
     }
@@ -179,14 +183,22 @@ public class PlayerController : EntityController
     private void GroundedCheck()
     {
         // set sphere position, with offset
-        Grounded = Physics.CheckSphere(transform.TransformPoint(m_Controller.center) + Vector3.down * m_Controller.height / 2, m_Controller.radius, 1, QueryTriggerInteraction.Ignore);
+        Grounded = Physics.CheckSphere(transform.TransformPoint(m_Controller.center) + Vector3.down * m_Controller.height / 2, m_Controller.radius, GroundLayer, QueryTriggerInteraction.Ignore);
     }
     // Update is called once per frame
 
     private void OnAnimatorMove()
     {
         Vector3 move = m_animator.deltaPosition;
-        if (!Grounded)
+        Debug.Log(move.magnitude/Time.deltaTime);
+        if(UseRootMotion)
+        {
+            if (!Grounded)
+            {
+                move = Velocity.x/2 * transform.forward * Time.deltaTime;
+            }
+        }
+        else
         {
             move = Velocity.x/2 * transform.forward * Time.deltaTime;
         }
@@ -195,3 +207,13 @@ public class PlayerController : EntityController
     }
 
 }
+
+// [CustomEditor(typeof(PlayerController)), CanEditMultipleObjects]
+// public class PlayerControllerEditor : Editor
+// {
+
+//     public override void OnInspectorGUI()
+//     {
+//         base.OnInspectorGUI();
+//     }    
+// }

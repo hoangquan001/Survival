@@ -419,7 +419,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.66
+      value: 24.36
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
@@ -429,7 +429,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.83
+      value: -6.41
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: aafa1bcc111528d41963422f8ede8253,
         type: 3}
@@ -2996,6 +2996,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1077911952}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: aafa1bcc111528d41963422f8ede8253,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4363863358233036175}
   m_SourcePrefab: {fileID: 100100000, guid: aafa1bcc111528d41963422f8ede8253, type: 3}
 --- !u!4 &264481270378666893 stripped
 Transform:
@@ -3068,11 +3072,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5cf5a44c01bab4f8c5e16bd6694fba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0}
-  Grounded: 0
-  MaxSpeed: 10
-  RotationSpeed: 25
+  Velocity: {x: 0, y: 0}
+  WalkSpeed: 4
+  SprintSpeed: 15
+  RunSpeed: 10
   Acceleration: 20
   JumpForce: 10
-  playerState: 0
   GravityScale: 3
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  RotationSpeed: 10
+  UseRootMotion: 1
+--- !u!114 &4363863358233036175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5332271493688805397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 210cffe1d4b77f44182da398a1dd4f3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

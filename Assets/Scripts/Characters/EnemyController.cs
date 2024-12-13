@@ -168,7 +168,7 @@ public class EnemyController : EntityController
     public void SyncAttribute()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = Speed;
+        agent.speed = RunSpeed;
     }
     public override void Move(Vector3 motion)
     {

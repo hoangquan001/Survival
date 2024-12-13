@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cda7f5af7416df546bb9c54d2f897aa8
+guid: 6f9e14f3ce62a9147959e9721f383803
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,36 +31,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: jumpforward
-      takeName: mixamo.com
-      internalID: -203655887218126122
-      firstFrame: 44
-      lastFrame: 50
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 1
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 1
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -106,13 +77,7 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
-  referencedClips:
-  - 049ff0db99de15247bf37f8c64ebdce4
-  - 76c1b642cc86ddb469ca3aebe17793cf
-  - 3d5f004f4abc7534aac15c18511e3636
-  - 41da10e5130f42d45a158e9f66a6ffe7
-  - 1d69105bf292cf94a84c686e0d9e8c1f
-  - 8954e981f9373044f96938f00cee2a56
+  referencedClips: []
   importAnimation: 1
   humanDescription:
     serializedVersion: 3
