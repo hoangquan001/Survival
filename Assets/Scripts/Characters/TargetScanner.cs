@@ -79,8 +79,9 @@ public class TargetScanner : MonoBehaviour
     // }
 
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
+
         Color c = new Color(0, 0, 0.7f, 0.4f);
 
         UnityEditor.Handles.color = c;

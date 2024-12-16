@@ -28,7 +28,7 @@ public class PlayerController : EntityController
     {
         m_Controller = GetComponent<CharacterController>();
     }
-    
+
 
     public override void Update()
     {
@@ -84,7 +84,7 @@ public class PlayerController : EntityController
         if (Input.GetKeyUp(KeyCode.Space) && Grounded)
         {
             CurState = (int)PlayerState.Jump;
-         
+
         }
         if (Velocity.y < 0 && !Grounded)
         {
@@ -109,13 +109,14 @@ public class PlayerController : EntityController
         base.OnStateExit(playerState);
     }
 
-    protected override void OnStateUpdate(int playerState) {
+    protected override void OnStateUpdate(int playerState)
+    {
         base.OnStateUpdate(playerState);
         PlayerState currentState = (PlayerState)playerState;
         switch (currentState)
         {
             case PlayerState.Jump:
-   
+
                 break;
             case PlayerState.Falling:
                 if (Grounded)
@@ -141,7 +142,7 @@ public class PlayerController : EntityController
     {
         yield return new WaitForSeconds(DelayBeforeJump);
         Velocity.y = JumpForce;
-        
+
     }
     public override void Move(Vector3 motion)
     {
@@ -153,8 +154,8 @@ public class PlayerController : EntityController
     }
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, 0.2f);
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawSphere(transform.position, 0.2f);
     }
     private void HandleVertical()
     {
@@ -190,17 +191,17 @@ public class PlayerController : EntityController
     private void OnAnimatorMove()
     {
         Vector3 move = m_animator.deltaPosition;
-        Debug.Log(move.magnitude/Time.deltaTime);
-        if(UseRootMotion)
+        Debug.Log(move.magnitude / Time.deltaTime);
+        if (UseRootMotion)
         {
             if (!Grounded)
             {
-                move = Velocity.x/2 * transform.forward * Time.deltaTime;
+                move = Velocity.x / 2 * transform.forward * Time.deltaTime;
             }
         }
         else
         {
-            move = Velocity.x/2 * transform.forward * Time.deltaTime;
+            move = Velocity.x / 2 * transform.forward * Time.deltaTime;
         }
         move.y = 0;
         Move(move);

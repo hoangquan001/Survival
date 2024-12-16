@@ -65,7 +65,7 @@ namespace DesignPatterns.Core.Editor
 
                     if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() && IsSceneInBuildSettings(BootstrapScene))
                     {
-                        EditorSceneManager.OpenScene(BootstrapScene);
+                        // EditorSceneManager.OpenScene(BootstrapScene);
                     }
                     break;
 

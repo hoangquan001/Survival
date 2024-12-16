@@ -684,9 +684,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Velocity: {x: 0, y: 0}
-  GravityScale: 2
-  Speed: 2
+  WalkSpeed: 1
+  SprintSpeed: 3
+  RunSpeed: 2
+  Acceleration: 10
   JumpForce: 12
+  GravityScale: 2
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 1
   boundary: {fileID: 0}
 --- !u!114 &5427003126754486289
 MonoBehaviour:
