@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+public delegate void StateChangeEvent(EntityState oldState, EntityState newState);
+
+public enum EntityState { Idle = 0, Walk = 1, Run = 2, Jump = 3, Climb = 6, Falling = 4, Landing = 5, Jumping = 6, Death = 7,Attack = 8, GettingUp = 9};
 
 public class EntityController : MonoBehaviour
 {
@@ -33,19 +36,19 @@ public class EntityController : MonoBehaviour
             return RunSpeed;
         }
     }
-    protected int _curState = 0;
+    protected EntityState _curState = 0;
     protected Animator m_animator;
     protected MonoEventReceiver m_receiver;
     public StateChangeEvent onStateChange;
     public float Gravity { get { return Physics.gravity.y * GravityScale; } }
-    public virtual int CurState
+    public virtual EntityState CurState
     {
         get => _curState;
         set
         {
             if (_curState == value) return;
-            onStateChange?.Invoke(_curState, (int)value);
-            _curState = (int)value;
+            onStateChange?.Invoke(_curState, value);
+            _curState = value;
         }
     }
 
@@ -86,7 +89,7 @@ public class EntityController : MonoBehaviour
     {
         
     }
-    protected virtual void OnStateChange(int oldState, int newState)
+    protected virtual void OnStateChange(EntityState oldState, EntityState newState)
     {
         if (oldState == newState) return;
 
@@ -94,17 +97,16 @@ public class EntityController : MonoBehaviour
         OnStateEnter(newState);
     }
 
-    protected virtual void OnStateExit(int State)
+    protected virtual void OnStateExit(EntityState State)
     {
-        EnemyState state = (EnemyState)State;
 
     }
-    protected virtual void OnStateEnter(int State)
+    protected virtual void OnStateEnter(EntityState State)
     {
       
     }
 
-    protected virtual void OnStateUpdate(int State)
+    protected virtual void OnStateUpdate(EntityState State)
     {
        
     }

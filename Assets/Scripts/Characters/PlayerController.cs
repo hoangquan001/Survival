@@ -1,5 +1,6 @@
 
 using System.Collections;
+using EditorAttributes;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,6 @@ public class PlayerData
 
 }
 
-public enum PlayerState { Idle = 0, Walk = 1, Run = 2, Jump = 3, Climb = 6, Falling = 4, Landing = 5 }
 public class PlayerController : EntityController
 {
     private CharacterController m_Controller;
@@ -51,84 +51,96 @@ public class PlayerController : EntityController
             transform.forward = Vector3.RotateTowards(transform.forward, forward, Time.deltaTime * RotationSpeed, .1f);
         }
 
-        CalculateRunSpeed(movement);
+        UpdateRun(movement);
+        UpdateGravity();
 
-
-        m_animator.SetFloat("speed", Velocity.x);
-        if (Input.GetKeyUp(KeyCode.V))
-        {
-            m_animator.SetTrigger("turn180");
-        }
-        if (Grounded)
-        {
-            if (Velocity.y < 0)
-            {
-                Velocity.y = -2;
-            }
-        }
-        else
-        {
-            Velocity.y += Gravity * Time.deltaTime;
-            Velocity.y = Mathf.Clamp(Velocity.y, Physics.gravity.y, -Physics.gravity.y);
-        }
 
         UpdateAnyState();
         m_animator.SetInteger("state", (int)_curState);
-
+        m_animator.SetFloat("speed", Velocity.x);
         m_animator.SetBool("isGrounded", Grounded);
+    }
+    /// <summary>
+    /// Updates the player's gravity effect based on current state and velocity.
+    /// </summary>
+    void UpdateGravity()
+    {
+        // Adjust gravity when player is grounded
+        if (Grounded && Velocity.y < 0)
+        {
+            Velocity.y = -2;
+        }
+        // Apply gravity when player is in the air
+        else
+        {
+            Velocity.y += Gravity * Time.deltaTime;
+            // Clamp the velocity to prevent excessive falling speed
+            Velocity.y = Mathf.Clamp(Velocity.y, Physics.gravity.y, -Physics.gravity.y);
+        }
         Move(Vector3.up * Velocity.y * Time.deltaTime);
-
     }
     void UpdateAnyState()
     {
         if (Input.GetKeyUp(KeyCode.Space) && Grounded)
         {
-            CurState = (int)PlayerState.Jump;
+            CurState = EntityState.Jump;
 
         }
         if (Velocity.y < 0 && !Grounded)
         {
-            CurState = (int)PlayerState.Falling;
+            CurState = EntityState.Falling;
         }
 
     }
-    protected override void OnStateEnter(int playerState)
+    protected override void OnStateEnter(EntityState State)
     {
-        base.OnStateEnter(playerState);
+        base.OnStateEnter(State);
 
-        switch (playerState)
+        switch (State)
         {
-            case (int)PlayerState.Jump:
+            case EntityState.Jump:
                 StartCoroutine(Jump());
                 break;
+            case EntityState.Death:
+                // StartCoroutine(Death());
+                break;
         }
     }
 
-    protected override void OnStateExit(int playerState)
+    protected override void OnStateExit(EntityState state)
     {
-        base.OnStateExit(playerState);
+        base.OnStateExit(state);
     }
 
-    protected override void OnStateUpdate(int playerState)
+    protected override void OnStateUpdate(EntityState state)
     {
-        base.OnStateUpdate(playerState);
-        PlayerState currentState = (PlayerState)playerState;
-        switch (currentState)
+        base.OnStateUpdate(state);
+        switch (state)
         {
-            case PlayerState.Jump:
+            case EntityState.Jump:
 
                 break;
-            case PlayerState.Falling:
+            case EntityState.Falling:
                 if (Grounded)
                 {
-                    CurState = (int)PlayerState.Landing;
+                    CurState = EntityState.Landing;
                 }
                 break;
-            case PlayerState.Landing:
-                CurState = (int)PlayerState.Idle;
+            case EntityState.Landing:
+                CurState = EntityState.Idle;
                 Velocity.x = Speed / 4;
                 break;
-            case PlayerState.Idle:
+            case EntityState.Run:
+                if(Velocity.x <= 0.0f)
+                {
+                    CurState = EntityState.Idle;
+                }
+                break;
+            case EntityState.Idle:
+                if(Velocity.x > 0)
+                {
+                    CurState = EntityState.Run;
+                }
                 break;
         }
     }
@@ -136,7 +148,7 @@ public class PlayerController : EntityController
     private IEnumerator Idle(float Delay)
     {
         yield return new WaitForSeconds(Delay);
-        CurState = (int)PlayerState.Idle;
+        CurState = (int)EntityState.Idle;
     }
     private IEnumerator Jump()
     {
@@ -170,7 +182,7 @@ public class PlayerController : EntityController
         GUI.Label(new Rect(0, 48, 300, 24), "Velocity: " + Velocity, style);
     }
 
-    private void CalculateRunSpeed(Vector3 movement)
+    private void UpdateRun(Vector3 movement)
     {
         float scale = 1;
         if (movement.magnitude <= 0)
@@ -206,6 +218,20 @@ public class PlayerController : EntityController
         move.y = 0;
         Move(move);
     }
+    [Button]
+
+    public override void Die()
+    {
+        base.Die();
+        CurState = EntityState.Death;
+    }
+    [Button]
+
+    public  void Revice()
+    {
+        CurState = EntityState.Death;
+    }
+
 
 }
 

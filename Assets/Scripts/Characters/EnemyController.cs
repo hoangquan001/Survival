@@ -5,16 +5,8 @@ using EditorAttributes;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum EnemyState
-{
-    Idle,
-    Attack,
-    Move,
-    Jump
-}
 
 
-public delegate void StateChangeEvent(int oldState, int newState);
 
 public class EnemyController : EntityController
 {
@@ -55,34 +47,32 @@ public class EnemyController : EntityController
         agent.SetDestination(_target.transform.position);
     }
 
-    protected override void OnStateChange(int oldState, int newState)
+    protected override void OnStateChange(EntityState oldState, EntityState newState)
     {
         base.OnStateChange(oldState, newState);
     }
 
-    protected override void OnStateExit(int enemyState)
+    protected override void OnStateExit(EntityState enemyState)
     {
-        EnemyState state = (EnemyState)enemyState;
+        // EnemyState state = (EnemyState)enemyState;
 
     }
-    protected override void OnStateEnter(int enemyState)
+    protected override void OnStateEnter(EntityState state)
     {
-        EnemyState state = (EnemyState)enemyState;
         switch (state)
         {
-            case EnemyState.Jump:
+            case EntityState.Jump:
                 agent.isStopped = false;
                 StartCoroutine(HandleJumpOnOffMeshLink(agent.currentOffMeshLinkData));
                 break;
         }
     }
 
-    protected override void OnStateUpdate(int enemyState)
+    protected override void OnStateUpdate(EntityState state)
     {
-        EnemyState state = (EnemyState)enemyState;
         switch (state)
         {
-            case EnemyState.Idle:
+            case EntityState.Idle:
                 idleTimer -= Time.deltaTime;
                 Velocity.x = 0;
                 if (idleTimer <= 0)
@@ -91,20 +81,20 @@ public class EnemyController : EntityController
                     idleTimer = Random.Range(2f, 5f);
                 }
                 break;
-            case EnemyState.Attack:
+            case EntityState.Attack:
                 break;
-            case EnemyState.Move:
+            case EntityState.Run:
                 agent.speed = Speed;
                 if (agent.remainingDistance < agent.stoppingDistance || agent.isPathStale)
                 {
                     agent.ResetPath();
-                    CurState = (int)EnemyState.Idle;
+                    CurState = (int)EntityState.Idle;
                     break;
                 }
                 Velocity.x = (agent.nextPosition - transform.position).magnitude / Time.deltaTime;
                 transform.position = agent.nextPosition;
                 break;
-            case EnemyState.Jump:
+            case EntityState.Jump:
                 break;
 
         }
@@ -127,12 +117,12 @@ public class EnemyController : EntityController
         {
             if (agent.isOnOffMeshLink)
             {
-                if (CurState == (int)EnemyState.Jump) return;
-                CurState = (int)EnemyState.Jump;
+                if (CurState == EntityState.Jump) return;
+                CurState = EntityState.Jump;
             }
             else
             {
-                CurState = (int)EnemyState.Move;
+                CurState = EntityState.Run;
             }
         }
         m_animator.SetFloat("velocityX", Velocity.x);
