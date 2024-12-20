@@ -1,4 +1,3 @@
-
 using System.Collections;
 using EditorAttributes;
 using UnityEditor;
@@ -14,6 +13,8 @@ public class PlayerData
 
 public class PlayerController : EntityController
 {
+    public GunScriptableObject gunScriptableObject;
+
     private CharacterController m_Controller;
     public float RotationSpeed = 15;
     [Range(0, 1)]
@@ -27,9 +28,14 @@ public class PlayerController : EntityController
     public override void Start()
     {
         m_Controller = GetComponent<CharacterController>();
+        SpawnGun();
     }
 
-
+    [Button("SpawnGun")]
+    public void SpawnGun()
+    {
+        gunScriptableObject.Spawn(this.transform,this);
+    }
     public override void Update()
     {
         base.Update();
@@ -59,6 +65,14 @@ public class PlayerController : EntityController
         m_animator.SetInteger("state", (int)_curState);
         m_animator.SetFloat("speed", Velocity.x);
         m_animator.SetBool("isGrounded", Grounded);
+
+
+
+        HandleWeaponFire();
+
+
+
+
     }
     /// <summary>
     /// Updates the player's gravity effect based on current state and velocity.
@@ -103,6 +117,8 @@ public class PlayerController : EntityController
                 break;
             case EntityState.Death:
                 // StartCoroutine(Death());
+                break;
+            case EntityState.Idle:
                 break;
         }
     }
@@ -180,6 +196,7 @@ public class PlayerController : EntityController
         GUI.Label(new Rect(0, 0, 300, 24), "RunSpeed: " + Velocity.x, style);
         GUI.Label(new Rect(0, 24, 300, 24), "IsGrounded: " + Grounded, style);
         GUI.Label(new Rect(0, 48, 300, 24), "Velocity: " + Velocity, style);
+        GUI.Label(new Rect(0, 72, 300, 24), "RealVelocity: " + realVelocity, style);
     }
 
     private void UpdateRun(Vector3 movement)
@@ -199,11 +216,11 @@ public class PlayerController : EntityController
         Grounded = Physics.CheckSphere(transform.TransformPoint(m_Controller.center) + Vector3.down * m_Controller.height / 2, m_Controller.radius, GroundLayer, QueryTriggerInteraction.Ignore);
     }
     // Update is called once per frame
-
+    float realVelocity;
     private void OnAnimatorMove()
     {
         Vector3 move = m_animator.deltaPosition;
-        Debug.Log(move.magnitude / Time.deltaTime);
+        realVelocity = move.magnitude / Time.deltaTime;
         if (UseRootMotion)
         {
             if (!Grounded)
@@ -232,15 +249,14 @@ public class PlayerController : EntityController
         CurState = EntityState.Death;
     }
 
+    private void HandleWeaponFire()
+    {
+       if(Input.GetKey(KeyCode.Mouse0))
+       {
+           gunScriptableObject.TryShot();
+       }
+    }
+
+
 
 }
-
-// [CustomEditor(typeof(PlayerController)), CanEditMultipleObjects]
-// public class PlayerControllerEditor : Editor
-// {
-
-//     public override void OnInspectorGUI()
-//     {
-//         base.OnInspectorGUI();
-//     }    
-// }

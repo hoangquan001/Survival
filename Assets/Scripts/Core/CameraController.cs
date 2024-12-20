@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     CinemachineFreeLook m_cinemachine;
 
-    float Speed = 2f;
+    public float Speed = 2f;
     // Start is called before the first frame update
     void Start()
     {

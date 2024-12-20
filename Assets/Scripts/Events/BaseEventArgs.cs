@@ -20,6 +20,14 @@ public class EntityDetectedEventArgs : BaseEventArgs
     public EntityController target;
 };
 
+public class StateChangeEventArgs : BaseEventArgs
+{
+    public override EventDefine type => EventDefine.StateChange;
+    public EntityState newState;
+    public EntityState oldState;
+
+
+};
 public class ObjectPoll<T> where T : new()
 {
     private static Dictionary<string, T> pool = new Dictionary<string, T>();

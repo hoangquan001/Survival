@@ -4,8 +4,24 @@ using JetBrains.Annotations;
 using UnityEngine;
 public delegate void StateChangeEvent(EntityState oldState, EntityState newState);
 
-public enum EntityState { Idle = 0, Walk = 1, Run = 2, Jump = 3, Climb = 6, Falling = 4, Landing = 5, Jumping = 6, Death = 7,Attack = 8, GettingUp = 9};
-
+public enum EntityState { 
+    Idle = 0, 
+    Walk = 1, 
+    Run = 2, 
+    Jump = 3, 
+    Climb = 6, 
+    Falling = 4, 
+    Landing = 5, 
+    Jumping = 6, 
+    Death = 7,
+    Attack = 8, 
+    GettingUp = 9,
+};
+public enum AttackState
+{
+    Idle = 0,
+    
+}
 public class EntityController : MonoBehaviour
 {
     [HideInInspector]
@@ -83,8 +99,16 @@ public class EntityController : MonoBehaviour
     public virtual void RegisterEvents()
     {
         onStateChange += OnStateChange;
+        onStateChange += SendChangeState;
     }
 
+    private void SendChangeState(EntityState oldState, EntityState newState)
+    {
+        StateChangeEventArgs changeStateEventArgs = ObjectPoll<StateChangeEventArgs>.Get();
+        changeStateEventArgs.oldState = oldState;
+        changeStateEventArgs.newState = newState;
+        m_receiver.Send(changeStateEventArgs.type, changeStateEventArgs);
+    }
     public virtual void TakeDamage(float damage)
     {
         

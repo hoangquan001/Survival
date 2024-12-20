@@ -7,5 +7,6 @@ public enum EventDefine
     StopEngine,
     Visible,
     InVisible,
-    DetectedTarget
+    DetectedTarget,
+    StateChange,
 }
