@@ -125,7 +125,7 @@ public class EnemyController : EntityController
                 CurState = EntityState.Run;
             }
         }
-        m_animator.SetFloat("velocityX", Velocity.x);
+        animator.SetFloat("velocityX", Velocity.x);
 
     }
 

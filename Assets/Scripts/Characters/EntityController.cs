@@ -42,6 +42,8 @@ public class EntityController : MonoBehaviour
 
     public bool Grounded{ get; protected set; }
 
+    [HideInInspector]
+    public Animator animator;
     protected float Speed {
         get
         {
@@ -53,7 +55,6 @@ public class EntityController : MonoBehaviour
         }
     }
     protected EntityState _curState = 0;
-    protected Animator m_animator;
     protected MonoEventReceiver m_receiver;
     public StateChangeEvent onStateChange;
     public float Gravity { get { return Physics.gravity.y * GravityScale; } }
@@ -73,7 +74,7 @@ public class EntityController : MonoBehaviour
        
     }
     public virtual void Awake() {
-        m_animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         m_receiver = GetComponent<MonoEventReceiver>();
         if(m_receiver != null)
         {

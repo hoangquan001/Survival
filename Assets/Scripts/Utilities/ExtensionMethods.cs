@@ -19,6 +19,31 @@ namespace DesignPatterns.Utilities
             trans.localScale = new Vector3(1, 1, 1);
         }
 
+        public static void ResetTransformation(this GameObject go)
+        {
+            go.transform.ResetTransformation();
+        }
+
+        public static Transform RecursiveFind(this Transform transform, string name, bool includeInactive = false)
+        {
+            if (transform.name == name && (includeInactive || transform.gameObject.activeSelf))
+            {
+                return transform;
+            }
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Transform child = transform.GetChild(i);
+                Transform result = child.RecursiveFind(name, includeInactive);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
 
 
         // Converts a screen position from UI Toolkit to world space

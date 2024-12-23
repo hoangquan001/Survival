@@ -23,7 +23,7 @@ using UnityEngine;
 
             var msg = new Damageable.DamageMessage()
             {
-                amount = damageAmount,
+                damageValue = damageAmount,
                 damager = this,
                 direction = Vector3.up,
             };

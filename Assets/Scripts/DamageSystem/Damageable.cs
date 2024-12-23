@@ -22,7 +22,7 @@ public partial class Damageable : MonoBehaviour
     public float hitForwardRotation = 360.0f;
 
     public bool isInvulnerable { get; set; }
-    public int currentHitPoints { get; private set; }
+    public float currentHitPoints { get; private set; }
 
     public UnityEvent OnDeath, OnReceiveDamage, OnHitWhileInvulnerable, OnBecomeVulnerable, OnResetDamage;
 
@@ -92,7 +92,7 @@ public partial class Damageable : MonoBehaviour
             return;
 
         isInvulnerable = true;
-        currentHitPoints -= data.amount;
+        currentHitPoints -= data.damageValue;
 
         if (currentHitPoints <= 0)
             schedule += OnDeath.Invoke; //This avoid race condition when objects kill each other.
@@ -121,7 +121,7 @@ public partial class Damageable : MonoBehaviour
     public void Kill()
     {
         ResetDamage();
-        ApplyDamage(new DamageMessage() { amount = 10 });
+        ApplyDamage(new DamageMessage() { damageValue = 10 });
     }
 
 

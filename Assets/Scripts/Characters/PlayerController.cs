@@ -1,4 +1,5 @@
 using System.Collections;
+using DesignPatterns.Utilities;
 using EditorAttributes;
 using UnityEditor;
 using UnityEngine;
@@ -14,7 +15,6 @@ public class PlayerData
 public class PlayerController : EntityController
 {
     public GunScriptableObject gunScriptableObject;
-
     private CharacterController m_Controller;
     public float RotationSpeed = 15;
     [Range(0, 1)]
@@ -34,7 +34,8 @@ public class PlayerController : EntityController
     [Button("SpawnGun")]
     public void SpawnGun()
     {
-        gunScriptableObject.Spawn(this.transform,this);
+        
+        gunScriptableObject.Spawn(transform.RecursiveFind("GunHolder", true),this);
     }
     public override void Update()
     {
@@ -62,14 +63,13 @@ public class PlayerController : EntityController
 
 
         UpdateAnyState();
-        m_animator.SetInteger("state", (int)_curState);
-        m_animator.SetFloat("speed", Velocity.x);
-        m_animator.SetBool("isGrounded", Grounded);
+        animator.SetInteger("state", (int)_curState);
+        animator.SetFloat("speed", Velocity.x);
+        animator.SetBool("isGrounded", Grounded);
 
 
 
         HandleWeaponFire();
-
 
 
 
@@ -219,7 +219,7 @@ public class PlayerController : EntityController
     float realVelocity;
     private void OnAnimatorMove()
     {
-        Vector3 move = m_animator.deltaPosition;
+        Vector3 move = animator.deltaPosition;
         realVelocity = move.magnitude / Time.deltaTime;
         if (UseRootMotion)
         {

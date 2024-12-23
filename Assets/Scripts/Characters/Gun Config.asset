@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: Gun Config
   m_EditorClassIdentifier: 
   gunType: 2
-  ModelPrefab: {fileID: 8969659466410684204, guid: af33e536fe4485549a3dba5a469eae07,
+  gunModelPrefab: {fileID: 8969659466410684204, guid: d7c659be1e57fa44298e3f69f038c717,
     type: 3}
-  hitEffect: {fileID: 4689222446938835271, guid: aeec8995e60dfdf4ca6145792ddf1677,
+  hitEffectPrefab: {fileID: 4689222446938835271, guid: aeec8995e60dfdf4ca6145792ddf1677,
     type: 3}
-  SpanwPosition: {x: 0, y: 2, z: 0}
-  SpanwRotation: {x: 0, y: 0, z: 0}
+  spanwPosition: {x: 0.2482, y: 0.2548, z: 0.0988}
+  spanwRotation: {x: -44.114, y: -19.833, z: 93.499}
   bulletPrefab: {fileID: 0}
+  flashEffectPrefab: {fileID: 198234346748616026, guid: 632da7ffb08e83a48bc9b77ee6c60cb3,
+    type: 3}
+  Spread: 0.05
   FireRate: 0.1
-  Spread: {x: 0.1, y: 0.1, z: 0.1}
   trailRenderer: {fileID: 0}
   trailTime: 0.1
+  damageConfig: {fileID: 11400000, guid: d6fc30531d93f444ea4141eaa53cf19f, type: 2}
+  ammoConfig: {fileID: 11400000, guid: aeba4d980190c6b43bfdceb12c107720, type: 2}
